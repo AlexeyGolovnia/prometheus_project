@@ -1,0 +1,32 @@
+groups:
+  - name: AllInstances
+    rules:
+    - alert: InstanceDown
+      expr: up == 0
+      for: 30s
+      labels:
+        severity: critical
+      annotations:
+        summary: "Prometheus target missing (instance {{ $labels.instance }})"
+        description: "A Prometheus target has disappeared"
+        
+  - name: Network
+    rules:
+    - alert: Network_receive_bytes
+      expr: rate(node_network_receive_bytes_total[5m]) > 30
+      for: 30s
+      labels:
+        severity: warning
+      annotations:
+        summary: "More than 30 bytes per 5 min for node_exporter"
+        
+  - name: CPU
+    rules:
+    - alert: CPU_max_frequency
+      expr: max(node_cpu_seconds_total{mode="iowait"}) > 6
+      for: 30s
+      labels:
+        severity: warning
+      annotations:
+        summary: "CPU use more than 6%"
+        
